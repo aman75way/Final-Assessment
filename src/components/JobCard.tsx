@@ -1,20 +1,12 @@
 import { Box, Typography, Button } from "@mui/material";
 import { motion } from "motion/react";
 import { useDispatch } from "react-redux";
-// import { applyForJob } from "../store/slices/applicationSlice";
+import { addApplication } from "../store/slices/applicationSlice";
 import { useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
-import { toast } from "react-toastify";
+import { AppDispatch, RootState } from "../store/store";
+import { useSelector } from "react-redux";
 
-
-
-interface Job {
-  id: string;
-  title: string;
-  company: string;
-  location: string;
-  type: string;
-}
 
 interface JobCardProps {
   job: Job;
@@ -24,18 +16,17 @@ interface JobCardProps {
 const JobCard: React.FC<JobCardProps> = ({ job }) => {
   const [loading, setLoading] = useState(false);
 
-  const dispatch = useDispatch();
-  const user = JSON.parse(sessionStorage.getItem("user") || "null");
+  const dispatch = useDispatch<AppDispatch>();
+  const user = useSelector((state: RootState) => state.auth.user);
 
-  const handleApply = () => {
+  const handleApply = (event : any) => {
+    event.preventDefault();
     if (!user || user.role !== "USER") return;
-
+  
     setLoading(true);
-    setTimeout(() => {
-      // dispatch(applyForJob({ userId: user.id, jobId: job.id }));
-      setLoading(false);
-      toast.success("Application submitted successfully!");
-    }, 1000); // Simulate network delay
+    dispatch(addApplication({ user_id: user.id, job_id: job.id }))
+      .unwrap()
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -73,6 +64,9 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
         <Typography variant="body2" sx={{ color: "black" }}>
           {job.location} | {job.type}
         </Typography>
+        <Typography variant="body2" sx={{ color: "black" }}>
+          {job.skillsRequired.join(", ")}
+        </Typography>
         {!user || user.role === "USER" ? (
           <Button
             variant="contained"
@@ -84,7 +78,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
               borderRadius: "12px",
               width: "100%",
             }}
-            onSubmit={handleApply}
+            onClick={handleApply}
           >
            {loading ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Apply Now"}
           </Button>

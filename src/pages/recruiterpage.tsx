@@ -1,25 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Button, Typography, Card, CardContent, Grid, Chip, IconButton, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../store/store";
+import { AppDispatch, RootState } from "../store/store";
 import AddJobModal from "../components/AddJobModal";
 import { motion } from "motion/react";
 import DeleteIcon from "@mui/icons-material/Delete";
-// import { deleteJob } from "../store/slices/jobSlice";
+import { fetchJobs, deleteJob } from "../store/slices/jobSlice";
 import { toast } from "react-toastify";
 
+
 const RecruiterPage = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const [open, setOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<{ open: boolean; jobId: string | null }>({ open: false, jobId: null });
+  
+  // Fetch jobs on component mount
+  useEffect(() => {
+    dispatch(fetchJobs());
+  }, []);
 
-  const jobs = useSelector((state: RootState) => state.jobs.jobsList);
-  const dispatch = useDispatch();
+  const jobs = useSelector((state: RootState) => state.jobs.jobs);
 
   // Retrieve logged-in recruiter
-  const recruiter = JSON.parse(sessionStorage.getItem("user") || "null");
+  const recruiter = useSelector((state: RootState) => state.auth.user);
 
   // Filter jobs created by the logged-in recruiter
-  const recruiterJobs = jobs.filter((job) => job.creator === recruiter.name);
+  const recruiterJobs = recruiter ? jobs.filter((job) => job.creator === recruiter.id) : [];
 
   // Handle job deletion
   const handleDeleteJob = () => {

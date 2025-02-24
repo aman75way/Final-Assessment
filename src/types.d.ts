@@ -9,31 +9,46 @@ interface User {
   id: string;
   name: string;
   email: string;
-  password?: string;
+  password: string;
   role: "USER" | "RECRUITER";
   resumeUpload?: File | null;
   resumeURL ?: string | null;
   skills?: string[] | null;
 }
 
+interface UpdateUser {
+  id: string;
+  name: string;
+  email: string;
+  role: "USER" | "RECRUITER";
+  resumeUpload?: File | null;
+  resumeURL ?: string | null;
+  skills?: string[] | null;
+}
+
+
 interface AuthState {
-  user: User | null;
+  user: UpdateUser | null;
   isLoading : boolean;
 }
 
+
+// Define Application Interface
 interface Application {
   id: string;
   userId: string;
   jobId: string;
   status: "Pending" | "Accepted" | "Rejected";
+  recruiterId : string;
+  createdAt: string;
 }
 
 
 interface ApplicationsState {
   applicationsList: Application[];
+  loading: boolean;
+  error: string | null;
 }
-
-
 
 
 
@@ -45,10 +60,12 @@ interface Job {
   location: string;
   type: string;
   skillsRequired: string[];
-  creator?: string | null;
+  creator: string;
 }
 
 // JobsState interface
-interface JobsState {
-  jobsList: Job[];
+interface JobState {
+  jobs: Job[];
+  loading: boolean;
+  error: string | null;
 }

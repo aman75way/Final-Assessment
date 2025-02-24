@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Modal, Box, TextField, Button, Typography, Chip } from "@mui/material";
 import { useDispatch } from "react-redux";
+import { AppDispatch, RootState } from "../store/store";
 import { addJob } from "../store/slices/jobSlice";
-import { toast } from "react-toastify";
+import { v4 as uuidv4 } from "uuid";
+import { useSelector } from "react-redux";
 
 interface AddJobModalProps {
   open: boolean;
@@ -10,13 +12,14 @@ interface AddJobModalProps {
 }
 
 const AddJobModal: React.FC<AddJobModalProps> = ({ open, handleClose }) => {
-  const dispatch = useDispatch();
-  const recruiter = JSON.parse(sessionStorage.getItem("user") || "null");
+  const dispatch = useDispatch<AppDispatch>();
+  const recruiter = useSelector((state: RootState) => state.auth.user);
 
   const [jobData, setJobData] = useState({
     title: "",
     location: "",
     type: "",
+    company: "",
     skillsRequired: [] as string[],
   });
 
@@ -41,20 +44,23 @@ const AddJobModal: React.FC<AddJobModalProps> = ({ open, handleClose }) => {
   };
 
   // Submit Job
-  const handleSubmit = () => {
-    if (!jobData.title || !jobData.location || !jobData.type || !recruiter) return;
+  const handleSubmit = (event : any) => {
+    event.preventDefault();
+
+    if (!jobData.title || !jobData.location || !jobData.type || !jobData.company || !recruiter) return;
 
     const newJob = {
+      id : uuidv4(),
       title: jobData.title,
-      company: recruiter.company, // Add company property
+      company: jobData.company,
       location: jobData.location,
       type: jobData.type,
       skillsRequired: jobData.skillsRequired,
-      creator: recruiter.name, // Store Recruiter Name
+      creator: recruiter.id,
     };
 
+
     dispatch(addJob(newJob));
-    toast.success("Job Created Successfully!");
     handleClose();
   };
 
@@ -77,6 +83,7 @@ const AddJobModal: React.FC<AddJobModalProps> = ({ open, handleClose }) => {
         </Typography>
         
         <TextField label="Title" name="title" fullWidth onChange={handleChange} sx={{ mt: 2 }} />
+        <TextField label="Company" name="company" fullWidth onChange={handleChange} sx={{ mt: 2 }} /> {/* Added input */}
         <TextField label="Location" name="location" fullWidth onChange={handleChange} sx={{ mt: 2 }} />
         <TextField label="Type" name="type" fullWidth onChange={handleChange} sx={{ mt: 2 }} />
         

@@ -68,4 +68,4 @@ interface JobsState {
 - creator will be the RECRUITER who will create the job for the company
 
 
-- i am i am creating a supabase psql database 
+- i am creating a supabase psql database 

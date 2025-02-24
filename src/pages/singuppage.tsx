@@ -94,7 +94,7 @@ const SignUp = () => {
         .from("userResume")
         .upload(`resume/${fileName}`, form.resumeUpload);
   
-      if (resumeUploadError) {
+      if (resumeUploadError || !resumeUploadData) {
         toast.error(`Error uploading resume: ${resumeUploadError.message}`);
         dispatch(signUpEnd());
         dispatch(logout())

@@ -9,11 +9,12 @@ import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { logout } from "../store/slices/authSlice";
 import { useDispatch } from "react-redux";
+import { AppDispatch, RootState } from "../store/store";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const user = useSelector((state: { auth: { user: User } }) => state.auth.user);
+  const dispatch = useDispatch<AppDispatch>();
+  const user = useSelector((state: RootState) => state.auth.user);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -31,7 +32,7 @@ const Navbar = () => {
       toast.error(error.message);
       return;
     }
-    toast.success("Logged out successfully!");
+    toast.error("Logged out successfully!");
     dispatch(logout());
     navigate("/login");
   };
@@ -73,21 +74,14 @@ const Navbar = () => {
               </Typography>
             </motion.div>
 
-            {user?.role === "USER" ? (
+
+            {user?.role === "USER" && (
               <motion.div whileHover={{ scale: 1.1 }}>
                 <Typography variant="body1" sx={{ cursor: "pointer", color: "black" }} onClick={() => navigate("/applications")}>
                   APPLICATIONS
                 </Typography>
               </motion.div>
-            ) : ""}
-
-            {user?.role === "RECRUITER" ? (
-              <motion.div whileHover={{ scale: 1.1 }}>
-                <Typography variant="body1" sx={{ cursor: "pointer", color: "black" }} onClick={() => navigate("/recruiter/applications")}>
-                  APPLICATIONS
-                </Typography>
-              </motion.div>
-            ) : ""}
+            )}
 
             {user?.role === "RECRUITER" && (
               <>
@@ -97,7 +91,7 @@ const Navbar = () => {
                   </Typography>
                 </motion.div>
                 <motion.div whileHover={{ scale: 1.1 }}>
-                  <Typography variant="body1" sx={{ cursor: "pointer", color: "black" }} onClick={() => navigate("/applications")}>
+                  <Typography variant="body1" sx={{ cursor: "pointer", color: "black" }} onClick={() => navigate("/recruiter/applications")}>
                     APPLICATIONS
                   </Typography>
                 </motion.div>
@@ -187,7 +181,7 @@ const Navbar = () => {
                   <ListItem button onClick={() => { navigate("/recruiter"); setMobileOpen(false); }}>
                     <ListItemText primary="JOBS" />
                   </ListItem>
-                  <ListItem button onClick={() => { navigate("/applications"); setMobileOpen(false); }}>
+                  <ListItem button onClick={() => { navigate("/recruiter/applications"); setMobileOpen(false); }}>
                     <ListItemText primary="APPLICATIONS" />
                   </ListItem>
                 </>

@@ -1,20 +1,79 @@
+import { useEffect, useState } from "react";
+import { Box, Typography, Paper, Chip, CircularProgress } from "@mui/material";
+import { motion } from "motion/react";
+import { toast } from "react-toastify";
+import {supabase} from "../services/supabase";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { Box, Typography, Paper, Chip } from "@mui/material";
-import { motion } from "motion/react";
 
 const statusColors = {
   Pending: "#f1c40f",
   Approved: "#2ecc71",
   Rejected: "#e74c3c",
-  Accepted: "#3498db", // Add the color for the Accepted status
+  Accepted: "#3498db",
 };
 
 const UserApplications = () => {
-  const user = JSON.parse(sessionStorage.getItem("user") || "null");
-  const applications = useSelector((state: RootState) =>
-    state.applications.applicationsList.filter((app) => app.userId === user?.id)
-  );
+  const user = useSelector((state : RootState) => state.auth.user);
+
+  // State for applications and loading/error handling
+  interface Application {
+    id: string;
+    job_id: string;
+    status: "Pending" | "Approved" | "Rejected" | "Accepted";
+    job: {
+      id?: string;
+      title?: string;
+      company?: string;
+    };
+  }
+  
+  const [applications, setApplications] = useState<Application[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!user) {
+      toast.error("Please log in to view your applications.");
+      setLoading(false);
+      return;
+    }
+
+    const fetchApplications = async () => {
+      try {
+        // Fetch applications from Supabase
+        const { data: apps, error } = await supabase
+          .from("applications")
+          .select("id, job_id, status")
+          .eq("user_id", user.id);
+
+        if (error) throw error;
+
+        // Fetch job details for each application
+        const jobIds = apps.map((app) => app.job_id);
+        const { data: jobs, error: jobError } = await supabase
+          .from("jobs")
+          .select("id, title, company")
+          .in("id", jobIds);
+
+        if (jobError) throw jobError;
+
+        // Map applications with job details
+        const appsWithDetails = apps.map((app) => ({
+          ...app,
+          job: jobs.find((job) => job.id === app.job_id) || {},
+        }));
+
+        setApplications(appsWithDetails);
+      } catch (error : any) {
+        console.error("Error fetching applications:", error.message);
+        toast.error("Failed to load applications.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchApplications();
+  }, [user?.id]);
 
   return (
     <motion.div
@@ -46,7 +105,9 @@ const UserApplications = () => {
           Your Applications
         </Typography>
 
-        {applications.length === 0 ? (
+        {loading ? (
+          <CircularProgress sx={{ color: "black" }} />
+        ) : applications.length === 0 ? (
           <Typography
             sx={{
               fontSize: "18px",
@@ -77,7 +138,10 @@ const UserApplications = () => {
                 }}
               >
                 <Typography variant="h6" fontWeight="bold">
-                  Job ID: {app.jobId}
+                  {app.job?.title || "Unknown Job"}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  {app.job?.company || "Unknown Company"}
                 </Typography>
                 <Box sx={{ mt: 1 }}>
                   <Chip

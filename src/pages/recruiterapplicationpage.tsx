@@ -1,27 +1,62 @@
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../store/store";
-import { updateApplicationStatus } from "../store/slices/applicationSlice";
+import { AppDispatch, RootState } from "../store/store";
 import { Box, Typography, Paper, Button, Grid, Chip } from "@mui/material";
 import { motion } from "motion/react";
+import { useEffect } from "react";
+import { fetchRecruiterApplications, updateApplicationStatus } from "../store/slices/applicationSlice";
 
-const statusColors = {
+const statusColors: Record<string, string> = {
   Pending: "#f1c40f",
   Accepted: "#2ecc71",
   Rejected: "#e74c3c",
 };
 
 const RecruiterApplications = () => {
-  const dispatch = useDispatch();
-  const user = JSON.parse(sessionStorage.getItem("user") || "null");
+  const dispatch = useDispatch<AppDispatch>();
+  const user = useSelector((state: RootState) => state.auth.user);
 
+  useEffect(() => {
+    if (user?.role === "RECRUITER") {
+      dispatch(fetchRecruiterApplications());
+    }
+  }, [dispatch, user]);
+
+  // Ensure the user is a recruiter
+  if (!user || user.role !== "RECRUITER") {
+    return (
+      <Typography
+        sx={{
+          textAlign: "center",
+          fontSize: "20px",
+          fontWeight: "bold",
+          color: "red",
+          marginTop: "50px",
+        }}
+      >
+        Access Denied: Only recruiters can view applications.
+      </Typography>
+    );
+  }
+
+  // Fetch applications and map job details from state.jobs
   const applications = useSelector((state: RootState) =>
-    state.applications.applicationsList.filter((app) =>
-      state.jobs.jobsList.find((job) => job.creator === user?.name && job.id === app.jobId)
-    )
+    state.applications.applicationsList
+      .filter((app) => app.recruiterId === user.id)
+      .map((app) => {
+        const job = state.jobs.jobs.find((j) => j.id === app.jobId);
+
+        return {
+          ...app,
+          jobTitle: job?.title || "Unknown Job",
+          companyName: job?.company || "Unknown Company",
+          location: job?.location || "Unknown Location",
+        };
+      })
   );
 
-  const handleDecision = (id: string, status: "Accepted" | "Rejected", userEmail: string) => {
-    dispatch(updateApplicationStatus({ id, status, userEmail }));
+  // Function to update application status
+  const handleDecision = (id: string, status: "Accepted" | "Rejected") => {
+    dispatch(updateApplicationStatus({ id, status }));
   };
 
   return (
@@ -42,7 +77,7 @@ const RecruiterApplications = () => {
         sx={{
           width: "100%",
           maxWidth: "900px",
-          padding: { xs: "20px", md: "40px" },
+          p: { xs: "20px", md: "40px" },
           background: "rgba(255, 255, 255, 0.1)",
           backdropFilter: "blur(10px)",
           borderRadius: "12px",
@@ -60,7 +95,7 @@ const RecruiterApplications = () => {
               fontSize: "18px",
               fontStyle: "italic",
               color: "gray",
-              padding: "20px",
+              p: "20px",
             }}
           >
             No applications found.
@@ -85,8 +120,15 @@ const RecruiterApplications = () => {
                     }}
                   >
                     <Typography variant="h6" fontWeight="bold">
-                      Job ID: {app.jobId}
+                      {app.jobTitle}
                     </Typography>
+                    <Typography variant="body2" sx={{ color: "gray" }}>
+                      {app.companyName} - {app.location}
+                    </Typography>
+                    <Typography variant="body1" sx={{ mt: 1 }}>
+                      Applicant ID: {app.userId}
+                    </Typography>
+
                     <Box sx={{ mt: 1 }}>
                       <Chip
                         label={app.status}
@@ -106,7 +148,7 @@ const RecruiterApplications = () => {
                           color: "white",
                           "&:hover": { backgroundColor: "#27ae60" },
                         }}
-                        onClick={() => handleDecision(app.id, "Accepted", "applicant@example.com")}
+                        onClick={() => handleDecision(app.id, "Accepted")}
                       >
                         Accept
                       </Button>
@@ -117,7 +159,7 @@ const RecruiterApplications = () => {
                           color: "white",
                           "&:hover": { backgroundColor: "#c0392b" },
                         }}
-                        onClick={() => handleDecision(app.id, "Rejected", "applicant@example.com")}
+                        onClick={() => handleDecision(app.id, "Rejected")}
                       >
                         Reject
                       </Button>

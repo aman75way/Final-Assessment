@@ -12,10 +12,6 @@ const authSlice = createSlice({
     loginStart: (state) => {
       state.isLoading = true;
     },
-    loginUser: (state, action: PayloadAction<User>) => {
-      state.user = action.payload;
-      state.isLoading = false;
-    },
     loginEnd: (state) => {
       state.isLoading = false;
     },
@@ -32,7 +28,7 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
     },
-    userUpdate: (state, action:  PayloadAction<Omit<User, "password">>) => {
+    userUpdate: (state, action:  PayloadAction<UpdateUser>) => {
       state.isLoading = true;
       state.user = action.payload;
       state.isLoading = false
@@ -40,6 +36,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { loginStart, loginUser, loginEnd, logout, signUpStart, signUpUser, signUpEnd, userUpdate } = authSlice.actions;
+export const { loginStart, loginEnd, logout, signUpStart, signUpUser, signUpEnd, userUpdate } = authSlice.actions;
 
 export default authSlice.reducer;

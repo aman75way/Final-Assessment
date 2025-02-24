@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { TextField, Button, IconButton, InputAdornment, Box, Typography } from "@mui/material";
+import {
+  TextField,
+  Button,
+  IconButton,
+  InputAdornment,
+  Box,
+  Typography,
+} from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
@@ -8,24 +15,15 @@ import loginAnimation from "../../public/login.json";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { loginEnd, loginStart, loginUser, userUpdate } from "../store/slices/authSlice";
+import { loginEnd, loginStart, userUpdate } from "../store/slices/authSlice";
 import { supabase } from "../services/supabase";
 
 const Login = () => {
-
-  const isLoading = useSelector((state: { auth: { isLoading: Boolean } }) => state.auth.isLoading);
+  const isLoading = useSelector(
+    (state: { auth: { isLoading: Boolean } }) => state.auth.isLoading
+  );
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const [user, setUser] = useState<Omit<User, "password">>({
-    id: "",
-    name: "",
-    email: "",
-    role: "USER",
-    resumeUpload: null,
-    resumeURL: null,
-    skills: [],
-  });
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,36 +31,44 @@ const Login = () => {
 
   const handleTogglePassword = () => setShowPassword(!showPassword);
 
-  const handleLogin = async () => {
+  const handleLogin = async (event: any) => {
+    event.preventDefault();
+    
     dispatch(loginStart());
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email: email,
-      password: password
+      password: password,
     });
-
-    setUser({ ...user, email: email as User["email"] })
-
-    const { data: dbUserData, error: dbUserError } = await supabase.from("users").select("*").eq("email", user.email).single();
-    if (dbUserError) return
-
-    if (dbUserData) {
-      setUser({ ...user, id: dbUserData.id as User["id"] })
-      setUser({ ...user, name: dbUserData.name as User["id"] })
-      setUser({ ...user, role: dbUserData.role as User["role"] })
-      setUser({ ...user, resumeURL: dbUserData.resumeURL as User["id"] })
-      setUser({ ...user, skills: dbUserData.skills as User["skills"] })
-    }
-
-    console.log(user)
-    // Dispatch the user data to Redux
-    dispatch(userUpdate(user));
 
     if (error) {
       toast.error(error.message);
       dispatch(loginEnd());
       return;
     }
+
+    const { data: dbUserData, error: dbUserError } = await supabase
+      .from("users")
+      .select()
+      .eq("email", email)
+      .single();
+
+    if (dbUserError || !dbUserData) {
+      dispatch(loginEnd());
+      toast.error("Error in fetching credentials");
+      return;
+    }
+
+    dispatch(
+      userUpdate({
+        id: dbUserData.id,
+        name: dbUserData.name,
+        role: dbUserData.role,
+        resumeURL: dbUserData.resumeURL,
+        skills: dbUserData.skills,
+        email,
+      })
+    );
 
     if (data) {
       dispatch(loginEnd());
@@ -96,7 +102,10 @@ const Login = () => {
           height: "100%",
         }}
       >
-        <Lottie animationData={loginAnimation} style={{ width: "100%", maxWidth: "800px" }} />
+        <Lottie
+          animationData={loginAnimation}
+          style={{ width: "100%", maxWidth: "800px" }}
+        />
       </Box>
 
       {/* Right Side: Login Form */}
@@ -136,7 +145,12 @@ const Login = () => {
             Login
           </legend>
 
-          <motion.div initial={{ x: 30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.2, duration: 0.5 }} style={{ width: "100%" }}>
+          <motion.div
+            initial={{ x: 30, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            style={{ width: "100%" }}
+          >
             <TextField
               label="Email"
               type="email"
@@ -148,7 +162,12 @@ const Login = () => {
             />
           </motion.div>
 
-          <motion.div initial={{ x: 30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.4, duration: 0.5 }} style={{ width: "100%" }}>
+          <motion.div
+            initial={{ x: 30, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            style={{ width: "100%" }}
+          >
             <TextField
               label="Password"
               type={showPassword ? "text" : "password"}
@@ -170,7 +189,11 @@ const Login = () => {
           </motion.div>
 
           {/* Signup Link */}
-          <motion.div initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5, duration: 0.5 }}>
+          <motion.div
+            initial={{ y: 10, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+          >
             <Typography
               variant="body2"
               sx={{
@@ -186,7 +209,12 @@ const Login = () => {
             </Typography>
           </motion.div>
 
-          <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.6, duration: 0.5 }} style={{ width: "100%" }}>
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
+            style={{ width: "100%" }}
+          >
             <Button
               variant="contained"
               fullWidth
