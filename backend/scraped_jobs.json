@@ -1,0 +1,116 @@
+[
+    {
+        "title": "",
+        "company": "",
+        "location": "",
+        "type": "",
+        "skills": [
+            ""
+        ]
+    },
+    {
+        "title": "Frontend Developer",
+        "company": "Tech Company",
+        "location": "Remote",
+        "type": "Full-time",
+        "skills": [
+            "JavaScript",
+            "React"
+        ]
+    },
+    {
+        "title": "",
+        "company": "",
+        "location": "",
+        "type": "",
+        "skills": [
+            ""
+        ]
+    },
+    {
+        "title": "Frontend Developer",
+        "company": "Tech Company",
+        "location": "Remote",
+        "type": "Full-time",
+        "skills": [
+            "JavaScript",
+            "React"
+        ]
+    },
+    {
+        "title": "Frontend Developer",
+        "company": "Tech Company",
+        "location": "Remote",
+        "type": "Full-time",
+        "skills": [
+            "JavaScript",
+            "React"
+        ]
+    },
+    {
+        "title": "MERN Stack Dev",
+        "company": "75 - Way Technologies",
+        "location": "Mohali",
+        "type": "Full-time",
+        "skills": [
+            "REACT",
+            "NODE",
+            "REDUX",
+            "MONGO",
+            "SQL",
+            "EXPRESS"
+        ]
+    },
+    {
+        "title": "Backend Dev",
+        "company": "Company 2",
+        "location": "Delhi",
+        "type": "Contract",
+        "skills": [
+            "NODEJS",
+            "MONGODB",
+            "SQL",
+            "REDIS"
+        ]
+    },
+    {
+        "title": "Java Dev",
+        "company": "Company 2",
+        "location": "Hybrid",
+        "type": "Intern",
+        "skills": [
+            "JAVA",
+            "SPRINGBOOT",
+            "JDBC"
+        ]
+    },
+    {
+        "title": "Dev Ops Engineer",
+        "company": "75 - Way Technologies",
+        "location": "Ludhiana",
+        "type": "Freelance",
+        "skills": [
+            "GitHub Actions",
+            "CI/CD Maintainence",
+            "Application Deployment"
+        ]
+    },
+    {
+        "title": "",
+        "company": "",
+        "location": "",
+        "type": "",
+        "skills": [
+            ""
+        ]
+    },
+    {
+        "title": "",
+        "company": "",
+        "location": "",
+        "type": "",
+        "skills": [
+            ""
+        ]
+    }
+]

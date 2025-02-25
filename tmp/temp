@@ -1,0 +1,138 @@
+### **Deploy Fine-Tuned LLM as an API (FastAPI)**
+Now, let's create a **FastAPI** backend that serves your fine-tuned chatbot model as an API. This will allow you to integrate it into your **job portal frontend**.
+
+---
+
+### **1. Install Dependencies**
+Make sure you have the required libraries installed:
+
+```bash
+pip install fastapi uvicorn transformers torch
+```
+
+---
+
+### **2. Create `app.py` for FastAPI**
+This script loads the fine-tuned model and exposes an API endpoint.
+
+```python
+from fastapi import FastAPI
+from pydantic import BaseModel
+from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
+
+# Load fine-tuned model
+MODEL_PATH = "./fine_tuned_model"
+tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
+model = AutoModelForCausalLM.from_pretrained(MODEL_PATH)
+
+# Initialize FastAPI
+app = FastAPI()
+
+class QueryRequest(BaseModel):
+    question: str
+
+@app.post("/chat")
+async def chat(request: QueryRequest):
+    user_input = request.question
+
+    # Tokenize input
+    input_ids = tokenizer.encode(user_input, return_tensors="pt")
+
+    # Generate response
+    with torch.no_grad():
+        output = model.generate(input_ids, max_length=150)
+    
+    response = tokenizer.decode(output[0], skip_special_tokens=True)
+    return {"response": response}
+
+@app.get("/")
+def root():
+    return {"message": "Job Chatbot API is running!"}
+```
+
+---
+
+### **3. Run the API**
+Start the FastAPI server with:
+
+```bash
+uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+```
+
+This will serve the API at:
+
+```
+http://localhost:8000
+```
+
+You can test it by sending a **POST request**:
+
+```bash
+curl -X 'POST' 'http://localhost:8000/chat' -H 'Content-Type: application/json' -d '{"question": "What are the skills required for a Frontend Developer?"}'
+```
+
+Expected Response:
+```json
+{
+    "response": "The required skills for a Frontend Developer position at Tech Company are: JavaScript, React."
+}
+```
+
+---
+
+### **4. Integrate with React Frontend**
+#### **Frontend API Call (React)**
+In your **React job portal frontend**, use **Axios** to fetch chatbot responses.
+
+1. **Install Axios** (if not installed)
+```bash
+npm install axios
+```
+
+2. **Create a Chat Component (`Chatbot.tsx`)**
+```tsx
+import { useState } from "react";
+import axios from "axios";
+
+const Chatbot = () => {
+    const [question, setQuestion] = useState("");
+    const [response, setResponse] = useState("");
+
+    const handleChat = async () => {
+        if (!question) return;
+        try {
+            const res = await axios.post("http://localhost:8000/chat", { question });
+            setResponse(res.data.response);
+        } catch (error) {
+            console.error("Error:", error);
+            setResponse("Error connecting to chatbot.");
+        }
+    };
+
+    return (
+        <div>
+            <h2>Job Chatbot</h2>
+            <input
+                type="text"
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                placeholder="Ask me about job roles..."
+            />
+            <button onClick={handleChat}>Ask</button>
+            <p><strong>Chatbot:</strong> {response}</p>
+        </div>
+    );
+};
+
+export default Chatbot;
+```
+
+---
+
+### **5. Next Steps**
+- **Deploy the FastAPI backend** on **Render/Vercel** or **Google Cloud Run**.
+- **Host the frontend** on **Vercel** or **Firebase Hosting**.
+- **Enhance the AI responses** by integrating **RAG (Retrieval-Augmented Generation)** with FAISS for better job search queries.
+
+Would you like help deploying this on **Render or Google Cloud?** 🚀

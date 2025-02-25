@@ -1,0 +1,10 @@
+conda create --name job_finetune_cpu python=3.10
+conda activate job_finetune_cpu
+conda install pytorch torchvision torchaudio cpuonly -c pytorch
+pip install transformers datasets peft
+
+
+conda create --name job_finetune_gpu python=3.10
+conda activate job_finetune_gpu
+conda install pytorch torchvision torchaudio pytorch-cuda=12.6 -c pytorch -c nvidia
+pip install transformers datasets peft

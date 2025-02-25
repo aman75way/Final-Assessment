@@ -1,0 +1,38 @@
+# Core ML & Transformers
+torch
+transformers
+datasets
+peft
+
+# bitsandbytes-cpu
+bitsandbytes
+accelerate
+
+# Web Scraping
+selenium
+beautifulsoup4
+webdriver-manager
+
+# API & Backend
+fastapi
+uvicorn
+
+
+
+# For CPU-Only Systems
+torch==2.1.0+cpu
+torchvision==0.16.0+cpu
+torchaudio==2.1.0+cpu
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+# For GPU-Enabled Systems (CUDA 11+)
+# Comment the CPU lines above and uncomment below for GPU support
+# torch==2.1.0+cu118
+# torchvision==0.16.0+cu118
+# torchaudio==2.1.0+cu118
+# --extra-index-url https://download.pytorch.org/whl/cu118
+
+
+
+# pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121     
+# pip3 install torch torchvision torchaudio

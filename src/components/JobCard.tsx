@@ -62,16 +62,16 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
           // marginRight: { xs: 2, sm: 1, md: 6 }
         }}
       >
-        <Typography variant="h6" fontWeight="bold" sx={{ color: "black" }}>
+        <Typography variant="h6" className="job-title" fontWeight="bold" sx={{ color: "black" }}>
           {job.title}
         </Typography>
-        <Typography variant="body1" sx={{ color: "black" }}>
+        <Typography variant="body1" className="job-company" sx={{ color: "black" }}>
           {job.company}
         </Typography>
-        <Typography variant="body2" sx={{ color: "black" }}>
+        <Typography variant="body2" className="job-location" sx={{ color: "black" }}>
           {job.location} | {job.type}
         </Typography>
-        <Typography variant="body2" sx={{ color: "black" }}>
+        <Typography variant="body2" className="job-skills" sx={{ color: "black" }}>
           {job.skillsRequired.join(", ")}
         </Typography>
         {!user || user.role === "USER" ? (

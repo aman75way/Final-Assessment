@@ -1,29 +1,31 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchChatResponse } from "../store/slices/chatBotSlice";
-import { RootState } from "../store/store";
-import { AppDispatch } from "../store/store";
+import { Box, TextField, Button, Typography } from "@mui/material";
+import axios from "axios";
 
 const Chatbot = () => {
-  const [input, setInput] = useState("");
-  const dispatch = useDispatch<AppDispatch>();
-  const chat = useSelector((state: RootState) => state.chatbot.chat);
+  const [message, setMessage] = useState("");
+  const [response, setResponse] = useState("");
 
-  const handleSend = () => {
-    dispatch(fetchChatResponse(input));
-    setInput("");
+  const handleSend = async () => {
+    const res = await axios.post("http://localhost:8000/chatbot/", { query: message });
+    setResponse(res.data.response);
   };
 
   return (
-    <div>
-      <div>
-        {chat.map((msg: ChatMessage, i: number) => (
-          <p key={i}>{msg.isBot ? "Bot: " : "You: "}{msg.message}</p>
-        ))}
-      </div>
-      <input value={input} onChange={(e) => setInput(e.target.value)} />
-      <button onClick={handleSend}>Send</button>
-    </div>
+    <Box sx={{ width: "100%", p: 2, textAlign: "center" }}>
+      <Typography variant="h5">Job Chatbot</Typography>
+      <TextField
+        fullWidth
+        label="Ask me about jobs!"
+        variant="outlined"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+      />
+      <Button onClick={handleSend} sx={{ mt: 2, backgroundColor: "black", color: "white" }}>
+        Send
+      </Button>
+      <Typography sx={{ mt: 2, color: "black" }}>{response}</Typography>
+    </Box>
   );
 };
 
