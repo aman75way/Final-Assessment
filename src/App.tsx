@@ -18,17 +18,17 @@ import { userUpdate } from "./store/slices/authSlice";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "./store/store";
 import { useLoadingBar } from "react-top-loading-bar";
-import Chatbot from "./components/ChatBot";
-
+import ResumeBuilder from "./pages/resumebuilder";
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
   const isLoading = useSelector((state: RootState) => state.auth.isLoading);
   const { start, complete } = useLoadingBar({
-    color : "#000000",
+    color: "#000000", // black color for the loading bar
     height: 3,
   });
   const location = useLocation();
+
 
   useEffect(() => {
     if (isLoading) {
@@ -37,6 +37,13 @@ const App = () => {
       complete(); 
     }
   }, [isLoading, start, complete]);
+
+  
+  useEffect(() => {
+    start(); 
+    return () => complete(); 
+  }, [location.pathname, start, complete]);
+  
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -67,7 +74,7 @@ const App = () => {
     };
 
     fetchUser();
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
@@ -78,16 +85,18 @@ const App = () => {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/recruiter" element={<RecruiterProtected />}>
-        <Route path="" element={<RecruiterPage />} />
+          <Route path="" element={<RecruiterPage />} />
         </Route>
         <Route path="/applications" element={<UserProtected />}>
-        <Route path="" element={<UserApplications />} />
+          <Route path="" element={<UserApplications />} />
         </Route>
         <Route path="/recruiter/applications" element={<RecruiterProtected />}>
-        <Route path="" element={<RecruiterApplications />} />
+          <Route path="" element={<RecruiterApplications />} />
+        </Route>
+        <Route path="/resume-builder" element={<UserProtected />}>
+          <Route path="" element={<ResumeBuilder />} />
         </Route>
       </Routes>
-      <Chatbot />
       <Footer />
     </>
   );

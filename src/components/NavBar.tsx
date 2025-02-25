@@ -1,5 +1,18 @@
 import { useState } from "react";
-import { AppBar, Toolbar, Typography, Box, Menu, MenuItem, IconButton, Button, Drawer, List, ListItem, ListItemText } from "@mui/material";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Box,
+  Menu,
+  MenuItem,
+  IconButton,
+  Button,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -27,7 +40,7 @@ const Navbar = () => {
   };
 
   const handleLogout = async () => {
-    const {error} = await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
     if (error) {
       toast.error(error.message);
       return;
@@ -54,8 +67,13 @@ const Navbar = () => {
         boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.15)",
       }}
     >
-      <AppBar position="static" sx={{ background: "transparent", boxShadow: "none" }}>
-        <Toolbar sx={{ display: "flex", justifyContent: "space-between", px: 3 }}>
+      <AppBar
+        position="static"
+        sx={{ background: "transparent", boxShadow: "none" }}
+      >
+        <Toolbar
+          sx={{ display: "flex", justifyContent: "space-between", px: 3 }}
+        >
           {/* Logo / Home */}
           <Typography
             variant="h6"
@@ -67,31 +85,63 @@ const Navbar = () => {
           </Typography>
 
           {/* Desktop Navigation */}
-          <Box sx={{ display: { xs: "none", md: "flex" }, gap: 3, alignItems: "center" }}>
+          <Box
+            sx={{
+              display: { xs: "none", md: "flex" },
+              gap: 3,
+              alignItems: "center",
+            }}
+          >
             <motion.div whileHover={{ scale: 1.1 }}>
-              <Typography variant="body1" sx={{ cursor: "pointer", color: "black" }} onClick={() => navigate("/")}>
+              <Typography
+                variant="body1"
+                sx={{ cursor: "pointer", color: "black" }}
+                onClick={() => navigate("/")}
+              >
                 HOME
               </Typography>
             </motion.div>
 
-
             {user?.role === "USER" && (
-              <motion.div whileHover={{ scale: 1.1 }}>
-                <Typography variant="body1" sx={{ cursor: "pointer", color: "black" }} onClick={() => navigate("/applications")}>
-                  APPLICATIONS
-                </Typography>
-              </motion.div>
+              <>
+                <motion.div whileHover={{ scale: 1.1 }}>
+                  <Typography
+                    variant="body1"
+                    sx={{ cursor: "pointer", color: "black" }}
+                    onClick={() => navigate("/applications")}
+                  >
+                    APPLICATIONS
+                  </Typography>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.1 }}>
+                  <Typography
+                    variant="body1"
+                    sx={{ cursor: "pointer", color: "black" }}
+                    onClick={() => navigate("/resume-builder")}
+                  >
+                    RESUME
+                  </Typography>
+                </motion.div>
+              </>
             )}
 
             {user?.role === "RECRUITER" && (
               <>
                 <motion.div whileHover={{ scale: 1.1 }}>
-                  <Typography variant="body1" sx={{ cursor: "pointer", color: "black" }} onClick={() => navigate("/recruiter")}>
+                  <Typography
+                    variant="body1"
+                    sx={{ cursor: "pointer", color: "black" }}
+                    onClick={() => navigate("/recruiter")}
+                  >
                     JOBS
                   </Typography>
                 </motion.div>
                 <motion.div whileHover={{ scale: 1.1 }}>
-                  <Typography variant="body1" sx={{ cursor: "pointer", color: "black" }} onClick={() => navigate("/recruiter/applications")}>
+                  <Typography
+                    variant="body1"
+                    sx={{ cursor: "pointer", color: "black" }}
+                    onClick={() => navigate("/recruiter/applications")}
+                  >
                     APPLICATIONS
                   </Typography>
                 </motion.div>
@@ -101,7 +151,10 @@ const Navbar = () => {
             {/* User Dropdown */}
             {user ? (
               <>
-                <IconButton onClick={handleMenuOpen} sx={{ color: "black", ml: 2 }}>
+                <IconButton
+                  onClick={handleMenuOpen}
+                  sx={{ color: "black", ml: 2 }}
+                >
                   <AccountCircleIcon fontSize="large" />
                 </IconButton>
                 <Menu
@@ -119,8 +172,12 @@ const Navbar = () => {
                     },
                   }}
                 >
-                  <MenuItem disabled>{user.name} - {user.role}</MenuItem>
-                  <MenuItem onClick={handleLogout} sx={{ color: "black" }}>Logout</MenuItem>
+                  <MenuItem disabled>
+                    {user.name} - {user.role}
+                  </MenuItem>
+                  <MenuItem onClick={handleLogout} sx={{ color: "black" }}>
+                    Logout
+                  </MenuItem>
                 </Menu>
               </>
             ) : (
@@ -166,22 +223,57 @@ const Navbar = () => {
             }}
           >
             <List sx={{ mt: 2 }}>
-              <ListItem button onClick={() => { navigate("/"); setMobileOpen(false); }}>
+              <ListItem
+                button
+                onClick={() => {
+                  navigate("/");
+                  setMobileOpen(false);
+                }}
+              >
                 <ListItemText primary="HOME" />
               </ListItem>
 
               {user?.role === "USER" && (
-                <ListItem button onClick={() => { navigate("/applications"); setMobileOpen(false); }}>
+                <>
+                <ListItem
+                  button
+                  onClick={() => {
+                    navigate("/applications");
+                    setMobileOpen(false);
+                  }}
+                >
                   <ListItemText primary="APPLICATIONS" />
                 </ListItem>
+                <ListItem
+                  button
+                  onClick={() => {
+                    navigate("/resume-builder");
+                    setMobileOpen(false);
+                  }}
+                >
+                  <ListItemText primary="RESUME" />
+                </ListItem>
+                </>
               )}
 
               {user?.role === "RECRUITER" && (
                 <>
-                  <ListItem button onClick={() => { navigate("/recruiter"); setMobileOpen(false); }}>
+                  <ListItem
+                    button
+                    onClick={() => {
+                      navigate("/recruiter");
+                      setMobileOpen(false);
+                    }}
+                  >
                     <ListItemText primary="JOBS" />
                   </ListItem>
-                  <ListItem button onClick={() => { navigate("/recruiter/applications"); setMobileOpen(false); }}>
+                  <ListItem
+                    button
+                    onClick={() => {
+                      navigate("/recruiter/applications");
+                      setMobileOpen(false);
+                    }}
+                  >
                     <ListItemText primary="APPLICATIONS" />
                   </ListItem>
                 </>
@@ -192,7 +284,13 @@ const Navbar = () => {
                   <ListItemText primary="LOGOUT" />
                 </ListItem>
               ) : (
-                <ListItem button onClick={() => { navigate("/login"); setMobileOpen(false); }}>
+                <ListItem
+                  button
+                  onClick={() => {
+                    navigate("/login");
+                    setMobileOpen(false);
+                  }}
+                >
                   <ListItemText primary="SIGN UP / LOGIN" />
                 </ListItem>
               )}

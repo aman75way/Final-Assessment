@@ -24,7 +24,6 @@ import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { supabase } from "../services/supabase";
 
-
 const SignUp = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -36,8 +35,6 @@ const SignUp = () => {
     email: "",
     password: "",
     role: "USER",
-    resumeUpload: null,
-    resumeURL : null,
     skills: [],
   });
 
@@ -57,12 +54,6 @@ const SignUp = () => {
 
   const handleTogglePassword = () => setShowPassword(!showPassword);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setForm({ ...form, resumeUpload: e.target.files[0] });
-    }
-  };
-
   const handleAddSkill = () => {
     if (skillInput.trim() && form.skills) {
       setForm({ ...form, skills: [...form.skills, skillInput.trim()] });
@@ -76,52 +67,27 @@ const SignUp = () => {
     const { data, error } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
-    })
+    });
 
     if (error) {
       toast.error(`Error signing up: ${error.message}`);
       dispatch(signUpEnd());
-      dispatch(logout())
+      dispatch(logout());
       return;
     }
 
-    if (form.resumeUpload) {
-      // Get the file extension
-      const fileExtension = form.resumeUpload.name.split('.').pop(); 
-      const fileName = `${form.name}_${form.id}.${fileExtension}`;
-  
-      const { data: resumeUploadData, error: resumeUploadError } = await supabase.storage
-        .from("userResume")
-        .upload(`resume/${fileName}`, form.resumeUpload);
-  
-      if (resumeUploadError || !resumeUploadData) {
-        toast.error(`Error uploading resume: ${resumeUploadError.message}`);
-        dispatch(signUpEnd());
-        dispatch(logout())
-        return;
-      }
-
-      const url:string = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/userResume/resume/${fileName}`
-
-      setForm({ ...form, resumeURL: url });
-      console.log(form.resumeURL)
-    }
-
-    console.log(form.resumeURL)
-
-    const {data : uploadData, error : uploadError} = await supabase.from("users").insert({
+    const { data: uploadData, error: uploadError } = await supabase.from("users").insert({
       id: form.id,
       name: form.name,
-      email: form.email,  
+      email: form.email,
       role: form.role,
-      resumeURL: form.resumeURL,
-      skills: form.skills
-    })
+      skills: form.skills,
+    });
 
     if (uploadError) {
       toast.error(`Error uploading data: ${uploadError.message}`);
       dispatch(signUpEnd());
-      dispatch(logout())
+      dispatch(logout());
       return;
     }
 
@@ -129,13 +95,10 @@ const SignUp = () => {
 
     if (data) {
       dispatch(signUpEnd());
-      console.log(data, uploadData)
       toast.success("Signed up successfully!");
       navigate("/");
     }
-
   };
-
 
   return (
     <motion.div
@@ -246,12 +209,7 @@ const SignUp = () => {
           {/* Role Selection (Radio Buttons) */}
           <FormControl component="fieldset" sx={{ marginBottom: 3 }}>
             <FormLabel component="legend">Role</FormLabel>
-            <RadioGroup
-              row
-              name="role"
-              value={form.role}
-              onChange={handleChange}
-            >
+            <RadioGroup row name="role" value={form.role} onChange={handleChange}>
               <FormControlLabel value="USER" control={<Radio />} label="User" />
               <FormControlLabel value="RECRUITER" control={<Radio />} label="Recruiter" />
             </RadioGroup>
@@ -260,14 +218,6 @@ const SignUp = () => {
           {/* Extra Fields for USER Role */}
           {form.role === "USER" && (
             <>
-              <TextField
-                type="file"
-                fullWidth
-                variant="outlined"
-                sx={{ marginBottom: 3 }}
-                onChange={handleFileChange}
-              />
-
               <TextField
                 label="Add Skill"
                 fullWidth
@@ -285,7 +235,17 @@ const SignUp = () => {
               {/* Display Added Skills */}
               <Box sx={{ marginBottom: 3 }}>
                 {form.skills?.map((skill, index) => (
-                  <Typography key={index} variant="body2" sx={{ display: "inline-block", marginRight: "8px", backgroundColor: "#f1f1f1", padding: "5px 10px", borderRadius: "8px" }}>
+                  <Typography
+                    key={index}
+                    variant="body2"
+                    sx={{
+                      display: "inline-block",
+                      marginRight: "8px",
+                      backgroundColor: "#f1f1f1",
+                      padding: "5px 10px",
+                      borderRadius: "8px",
+                    }}
+                  >
                     {skill}
                   </Typography>
                 ))}
@@ -293,8 +253,12 @@ const SignUp = () => {
             </>
           )}
 
-          {/* Login Link */}
-          <motion.div initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5, duration: 0.5 }}>
+           {/* Login Link */}
+           <motion.div
+            initial={{ y: 10, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+          >
             <Typography
               variant="body2"
               sx={{
@@ -306,26 +270,38 @@ const SignUp = () => {
               }}
               onClick={() => navigate("/login")}
             >
-              Already have an account? Click here!
+              Already and existing user? Click here
             </Typography>
           </motion.div>
 
-          <Button
-            variant="contained"
-            fullWidth
-            onClick={handleSignUp}
-            sx={{
-              backgroundColor: "black",
-              color: "white",
-              padding: "14px",
-              fontSize: "18px",
-              fontWeight: "bold",
-              borderRadius: "10px",
-              "&:hover": { backgroundColor: "#333" },
-            }}
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
+            style={{ width: "100%" }}
           >
-            {isLoading ? "Signing up..." : "Sign Up"}
-          </Button>
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={handleSignUp}
+              sx={{
+                backgroundColor: "black",
+                color: "white",
+                padding: "14px",
+                fontSize: "18px",
+                fontWeight: "bold",
+                borderRadius: "10px",
+                "&:hover": { backgroundColor: "#333" },
+              }}
+              component={motion.button}
+              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.05 }}
+              animate={isLoading ? { scale: [1, 0.95, 1] } : {}}
+              transition={{ repeat: isLoading ? Infinity : 0, duration: 0.6 }}
+            >
+              {isLoading ? "Logging in..." : "Login"}
+            </Button>
+          </motion.div>
         </motion.fieldset>
       </Box>
     </motion.div>
