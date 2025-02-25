@@ -9,6 +9,7 @@ import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { store } from "./store/store.ts";
+import { LoadingBarContainer } from "react-top-loading-bar";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -16,7 +17,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <ThemeProvider theme={theme}>
         <ToastContainer />
         <Provider store={store}>
-          <App />
+          <LoadingBarContainer >
+            <App />
+          </LoadingBarContainer>
         </Provider>
       </ThemeProvider>
     </BrowserRouter>

@@ -69,3 +69,10 @@ interface JobState {
   loading: boolean;
   error: string | null;
 }
+
+
+// ChatBot Interface
+interface ChatMessage {
+  message: string;
+  isBot: boolean;
+}

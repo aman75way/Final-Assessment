@@ -6,6 +6,7 @@ import { useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import { AppDispatch, RootState } from "../store/store";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 
 interface JobCardProps {
@@ -14,14 +15,20 @@ interface JobCardProps {
 
 
 const JobCard: React.FC<JobCardProps> = ({ job }) => {
+
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.auth.user);
 
   const handleApply = (event : any) => {
+
     event.preventDefault();
-    if (!user || user.role !== "USER") return;
+    if (!user) {
+      navigate("/login");
+      return;
+    }
   
     setLoading(true);
     dispatch(addApplication({ user_id: user.id, job_id: job.id }))

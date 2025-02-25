@@ -1,5 +1,5 @@
 import HomePage from "./pages/homepage";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/NavBar";
 import Footer from "./components/Footer";
 import Login from "./pages/loginpage";
@@ -15,9 +15,28 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { supabase } from "./services/supabase";
 import { userUpdate } from "./store/slices/authSlice";
+import { useSelector } from "react-redux";
+import { AppDispatch, RootState } from "./store/store";
+import { useLoadingBar } from "react-top-loading-bar";
+import Chatbot from "./components/ChatBot";
+
 
 const App = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  const isLoading = useSelector((state: RootState) => state.auth.isLoading);
+  const { start, complete } = useLoadingBar({
+    color : "#000000",
+    height: 3,
+  });
+  const location = useLocation();
+
+  useEffect(() => {
+    if (isLoading) {
+      start(); 
+    } else {
+      complete(); 
+    }
+  }, [isLoading, start, complete]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -51,10 +70,10 @@ const App = () => {
   }, []);
 
   return (
-    <div>
+    <>
       <ToastContainer position="top-right" autoClose={3000} />
       <Navbar />
-      <Routes>
+      <Routes location={location} key={location.pathname}>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/" element={<HomePage />} />
@@ -68,8 +87,9 @@ const App = () => {
         <Route path="" element={<RecruiterApplications />} />
         </Route>
       </Routes>
+      <Chatbot />
       <Footer />
-    </div>
+    </>
   );
 };
 
