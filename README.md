@@ -1,8 +1,11 @@
-# **Job Board Frontend**
 
-A modern **Job Board** application built with **React, TypeScript, Vite, Redux, and Framer Motion**. It allows **users to apply for jobs** and **recruiters to post job listings**, all managed via **localStorage/sessionStorage**.
+# **Job Portal Application**
+
+A modern **Job Portal** application built with **React, TypeScript, Redux, Supabase, and FastAPI**. It enables **users to find and apply for jobs**, **recruiters to post job listings**, and includes **AI-powered job recommendations**.
 
 ## **🛠️ Tech Stack**
+
+### **Frontend:**
 
 -   **React** – UI Library
 -   **TypeScript** – Type Safety
@@ -10,7 +13,13 @@ A modern **Job Board** application built with **React, TypeScript, Vite, Redux, 
 -   **Redux Toolkit** – State Management
 -   **Material UI (MUI)** – UI Components
 -   **Framer Motion** – Animations
--   **Session Storage / Local Storage** – Data Persistence
+
+### **Backend:**
+
+-   **FastAPI** – Python Backend
+-   **Supabase** – Database, Storage, and Auth
+-   **Hugging Face NLP Models** – AI-powered Resume Generation
+-   **Scikit-learn** – AI-based Job Recommendation System
 
 ----------
 
@@ -18,24 +27,19 @@ A modern **Job Board** application built with **React, TypeScript, Vite, Redux, 
 
 ### **🔹 User Features:**
 
-✅ **Sign Up / Log In** (stored in sessionStorage)  
-✅ **Apply for jobs** (applications stored in Redux/localStorage)  
-✅ **Upload Resume** (stored in localStorage)  
-✅ **Track Applied Jobs** (with status updates)
+✅ **Sign Up / Log In** (via Supabase Auth)  
+✅ **Apply for Jobs** (applications stored in Supabase)  
+✅ **AI-powered Job Recommendations** (based on user skills)  
+✅ **Track Applied Jobs**
 
 ### **🔹 Recruiter Features:**
 
-✅ **Create Job Listings** (stored in Redux/localStorage)  
-✅ **View and manage job applications**  
-✅ **Accept / Reject applications** (updates reflected in Redux/localStorage)  
-✅ **Delete job listings**
+✅ **Create Job Listings**  
+✅ **Delete Job Listings**
 
-### **🔹 Additional Features:**
+### **🔹 AI Features:**
 
-✅ **Glassmorphism UI** for a modern look  
-✅ **Framer Motion animations** for smooth interactions  
-✅ **Dark Theme & Responsive UI**  
-✅ **STORAGE Persistence via `SUPABASE`**
+✅ **AI-Based Job Recommendation System** (Finds best jobs based on skills)  
 
 ----------
 
@@ -44,22 +48,22 @@ A modern **Job Board** application built with **React, TypeScript, Vite, Redux, 
 ### **1️⃣ Clone the Repository**
 
 ```bash
-git clone https://github.com/aman75way/Job-Portal-Full-Implmentation-FrontEnd
-cd <directory>
+git clone https://github.com/aman75way/Final-Assessment.git
+cd Final-Assessment
 
 ```
 
 ### **2️⃣ Install Dependencies**
 
 ```bash
-npm install
+pnpm install
 
 ```
 
 ### **3️⃣ Start the Development Server**
 
 ```bash
-npm run dev
+pnpm run dev
 
 ```
 
@@ -72,7 +76,7 @@ npm run dev
 ```
 📦 src
  ┣ 📂 components       # Reusable UI Components
- ┣ 📂 pages            # App Pages (Recruiter, User, etc.)
+ ┣ 📂 pages            # Application Pages (Recruiter, User, etc.)
  ┣ 📂 store            # Redux Store & Slices
  ┣ 📂 utils            # Helper Functions
  ┣ 📜 App.tsx          # Main Application Component
@@ -81,13 +85,23 @@ npm run dev
 
 ```
 
+### **Backend (FastAPI) Structure**
+
+```
+📦 backend
+ ┣ 📜 main.py            # FastAPI Entry Point
+ ┣ 📜 job_recommendation.py  # AI Job Recommendation System
+ ┣ 📜 resume_generator.py    # AI Resume Generator
+ ┣ 📜 requirements.txt   # Dependencies
+
+```
+
 ----------
 
 ## **🔄 State Management (Redux Toolkit)**
 
--   **Jobs** are stored in **localStorage**.
--   **Applications & Users** are managed in **sessionStorage**.
--   **Redux persist ensures state persistence.**
+-   **Jobs & Applications** are stored in **Supabase**.
+-   **User Authentication** is handled via **Supabase Auth**.
 
 ----------
 
@@ -96,17 +110,50 @@ npm run dev
 ### **👤 For Users:**
 
 1.  **Sign Up / Log In**
-2.  **Browse available jobs**
-3.  **Apply for a job & upload resume**
-4.  **Track application status**
+2.  **Browse and Apply for Jobs**
+
+### **Future Enhancements:**
+1.  **Track Application Status**
+2.  **AI Powered Resume**
 
 ### **🧑‍💼 For Recruiters:**
 
 1.  **Log in as a Recruiter**
-2.  **Create job listings**
-3.  **View received applications**
-4.  **Accept / Reject applicants**
-5.  **Delete job listings**
+2.  **Create Job Listings**
+3.  **Delete Job Listings**
+
+### **Future Enhancements:**
+1.  **View Received Applications**
+2.  **Accept / Reject Applicants** 
+
+----------
+
+## **🔧 Backend Setup (FastAPI)**
+
+### **1️⃣ Create a Python Virtual Environment**
+
+```bash
+python -m venv venv
+source venv/bin/activate  # Mac/Linux
+venv\Scripts\activate  # Windows
+
+```
+
+### **2️⃣ Install Dependencies**
+
+```bash
+pip install -r requirements.txt
+
+```
+
+### **3️⃣ Start FastAPI Server**
+
+```bash
+uvicorn recommend:app --reload
+
+```
+
+✅ FastAPI will run at **`http://localhost:8000/`** 🚀
 
 ----------
 
@@ -115,17 +162,25 @@ npm run dev
 ### **⚡ Build for Production**
 
 ```bash
-npm run build
+pnpm run build
 
+```
+
+### **💻 Dev for Production**
+
+```bash
+pnpm run dev
 ```
 
 ### **🌍 Preview Build**
 
 ```bash
-npm run preview
+pnpm run preview
 
 ```
 
-## To Implement
+### **🚀 Future Improvements**
 
-- Email Functionality on Selection for Interview
+-   **Email Functionality** (Notify candidates about selection/rejection)
+-   **Improved AI Matching** (Better skill-based job recommendations)
+-   **Enhanced Resume Templates** (Customizable ATS-friendly layouts)
