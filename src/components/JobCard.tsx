@@ -61,6 +61,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
           }
           // marginRight: { xs: 2, sm: 1, md: 6 }
         }}
+        data-job-id={job.id}
       >
         <Typography variant="h6" className="job-title" fontWeight="bold" sx={{ color: "black" }}>
           {job.title}

@@ -16,42 +16,46 @@ const initialState: ResumeState = {
   error: null,
 };
 
+// Async Thunk: Generate Resume and Upload to Supabase
 export const generateResume = createAsyncThunk(
   "resume/generateResume",
-  async (_, { getState, rejectWithValue }) => {
+  async (description: string, { getState, rejectWithValue }) => {
     const state = getState() as RootState;
     const user = state.auth.user; // Get logged-in user data
 
     if (!user) return rejectWithValue("User not authenticated.");
 
     try {
-      const response = await fetch("http://localhost:5000/generate-resume", {
+      // 1. Generate Resume PDF via FastAPI
+      const response = await fetch("http://127.0.0.1:8000/generate-resume", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          user_id: user.id,
           name: user.name,
           email: user.email,
           skills: user.skills,
-          description: "A brief summary about the user", // Can be dynamic
+          description: description, // Take description from user input
         }),
       });
 
       if (!response.ok) throw new Error("Resume generation failed.");
 
-      // Get the PDF blob from response
+      // Convert response into a Blob (PDF file)
       const pdfBlob = await response.blob();
       const fileName = `resume_${user.id}.pdf`;
 
-      // 1. Upload to Supabase Storage
+      // 2. Upload generated resume to Supabase Storage
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from("userResume")
         .upload(`resume/${fileName}`, pdfBlob, { contentType: "application/pdf" });
 
       if (uploadError) throw new Error(uploadError.message);
 
+      // 3. Get the Public Resume URL from Supabase
       const resumeURL = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/userResume/resume/${fileName}`;
 
-      // 2. Update resumeURL in Supabase DB
+      // 4. Update resumeURL in Supabase Database
       const { error: updateError } = await supabase
         .from("users")
         .update({ resumeURL })
@@ -65,7 +69,6 @@ export const generateResume = createAsyncThunk(
     }
   }
 );
-
 
 // Resume Slice
 const resumeSlice = createSlice({
