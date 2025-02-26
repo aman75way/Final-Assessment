@@ -299,7 +299,7 @@ const SignUp = () => {
               animate={isLoading ? { scale: [1, 0.95, 1] } : {}}
               transition={{ repeat: isLoading ? Infinity : 0, duration: 0.6 }}
             >
-              {isLoading ? "Signing in..." : "Sign"}
+              {isLoading ? "Signing in..." : "Sign Up"}
             </Button>
           </motion.div>
         </motion.fieldset>
