@@ -59,11 +59,17 @@ def recommend_jobs(user_id: str):
         # Rank jobs based on similarity scores
         ranked_jobs = sorted(zip(jobs, similarity_scores), key=lambda x: x[1], reverse=True)
 
-        # Get top 5 jobs
-        top_jobs = [{"id": job["id"], "title": job["title"], "company": job["company"], 
-                     "location": job["location"], "type": job["type"], "score": score} 
-                    for job, score in ranked_jobs[:5]]
-
+         # Get top 5 jobs
+        top_jobs = [{
+            "id": job["id"],
+            "title": job["title"],
+            "company": job["company"],
+            "location": job["location"],
+            "type": job["type"],
+            "skillsRequired": job.get("skillsRequired", []),  # Include required skills
+            "score": score
+        } for job, score in ranked_jobs[:5]]
+        
         return {"recommended_jobs": top_jobs}
 
     except Exception as e:
