@@ -1,0 +1,28 @@
+[
+    {
+      "job_title": "Software Engineer",
+      "skills": ["Python", "Django", "REST APIs", "SQL", "Cloud Computing"],
+      "description": "Experienced Software Engineer with expertise in designing, developing, and deploying scalable web applications using Python and Django. Strong knowledge of RESTful API development, database optimization, and cloud technologies."
+    },
+    {
+      "job_title": "Data Scientist",
+      "skills": ["Machine Learning", "Deep Learning", "Python", "TensorFlow", "NLP"],
+      "description": "Data Scientist skilled in building predictive models, analyzing large datasets, and implementing deep learning techniques. Proficient in Python, TensorFlow, and NLP techniques for extracting meaningful insights."
+    },
+    {
+      "job_title": "Frontend Developer",
+      "skills": ["React", "JavaScript", "TypeScript", "Redux", "CSS"],
+      "description": "Passionate Frontend Developer specializing in building responsive web applications using React and Redux. Adept at writing clean and maintainable code in JavaScript and TypeScript."
+    },
+    {
+      "job_title": "Backend Developer",
+      "skills": ["Node.js", "Express.js", "MongoDB", "GraphQL", "Microservices"],
+      "description": "Backend Developer with experience in designing and optimizing RESTful APIs and GraphQL services. Skilled in database management, microservices architecture, and cloud deployments."
+    },
+    {
+      "job_title": "AI Engineer",
+      "skills": ["NLP", "Computer Vision", "Transformers", "Hugging Face", "PyTorch"],
+      "description": "AI Engineer with expertise in developing and fine-tuning Transformer-based NLP models. Skilled in Hugging Face, PyTorch, and deep learning frameworks for AI-powered applications."
+    }
+  ]
+  
