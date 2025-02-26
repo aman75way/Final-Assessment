@@ -33,7 +33,7 @@ export const fetchRecruiterApplications = createAsyncThunk(
     const { data, error } = await supabase
       .from("applications")
       .select("*")
-      .eq("recruiter_id", recruiterId); // Fetch applications for the recruiter
+      .eq("recruiter_id", recruiterId);
 
     if (error) return rejectWithValue(error.message);
     return data as Application[];
@@ -45,12 +45,12 @@ export const fetchRecruiterApplications = createAsyncThunk(
 export const addApplication = createAsyncThunk(
   "applications/addApplication",
   async (
-    { user_id, job_id }: { user_id: string; job_id: string },
+    { user_id, job_id , recruiter_id}: { user_id: string; job_id: string, recruiter_id : string },
     { rejectWithValue }
   ) => {
     const { data, error } = await supabase
       .from("applications")
-      .insert([{ user_id, job_id, status: "Pending" }])
+      .insert([{ user_id, job_id, status: "Pending", recruiter_id }])
       .select();
 
       console.log(data);

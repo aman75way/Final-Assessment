@@ -79,7 +79,7 @@ const App = () => {
 
   return (
     <>
-      <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer position="top-right" autoClose={2000} />
       <Navbar />
       <Routes location={location} key={location.pathname}>
         <Route path="/login" element={<Login />} />

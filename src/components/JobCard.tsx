@@ -31,7 +31,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
     }
 
     setLoading(true);
-    dispatch(addApplication({ user_id: user.id, job_id: job.id }))
+    dispatch(addApplication({ user_id: user.id, job_id: job.id, recruiter_id: job.creator }))
       .unwrap()
       .finally(() => setLoading(false));
   };
