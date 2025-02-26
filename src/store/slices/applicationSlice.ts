@@ -20,25 +20,25 @@ export const fetchApplications = createAsyncThunk(
 );
 
 // Fetch Applications for a Recruiter (GET from Supabase)
-export const fetchRecruiterApplications = createAsyncThunk(
-  "applications/fetchRecruiterApplications",
-  async (_, { getState, rejectWithValue }) => {
-    const state = getState() as RootState;
-    const recruiterId = state.auth.user?.id;
+// export const fetchRecruiterApplications = createAsyncThunk(
+//   "applications/fetchRecruiterApplications",
+//   async (_, { getState, rejectWithValue }) => {
+//     const state = getState() as RootState;
+//     const recruiterId = state.auth.user?.id;
 
-    if (!recruiterId) {
-      return rejectWithValue("Recruiter ID not found");
-    }
+//     if (!recruiterId) {
+//       return rejectWithValue("Recruiter ID not found");
+//     }
 
-    const { data, error } = await supabase
-      .from("applications")
-      .select("*")
-      .eq("recruiter_id", recruiterId);
+//     const { data, error } = await supabase
+//       .from("applications")
+//       .select("*")
+//       .eq("recruiter_id", recruiterId);
 
-    if (error) return rejectWithValue(error.message);
-    return data as Application[];
-  }
-);
+//     if (error) return rejectWithValue(error.message);
+//     return data as Application[];
+//   }
+// );
 
 
 // Add Application (INSERT into Supabase)

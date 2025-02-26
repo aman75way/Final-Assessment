@@ -113,7 +113,7 @@ const Navbar = () => {
                     APPLICATIONS
                   </Typography>
                 </motion.div>
-                <motion.div whileHover={{ scale: 1.1 }}>
+                {/* <motion.div whileHover={{ scale: 1.1 }}>
                   <Typography
                     variant="body1"
                     sx={{ cursor: "pointer", color: "black" }}
@@ -121,7 +121,7 @@ const Navbar = () => {
                   >
                     RESUME
                   </Typography>
-                </motion.div>
+                </motion.div> */}
                 <motion.div whileHover={{ scale: 1.1 }}>
                   <Typography
                     variant="body1"
@@ -184,7 +184,6 @@ const Navbar = () => {
                   <MenuItem disabled>
                     {user.name} - {user.role}
                   </MenuItem>
-                  {/* Skills List in Desktop */}
                   {user.skills && user.skills.length > 0 && (
                     <Box sx={{ padding: "8px 16px" }}>
                       <Typography variant="body2" sx={{ fontWeight: "bold" }}>
@@ -266,7 +265,7 @@ const Navbar = () => {
                   >
                     <ListItemText primary="APPLICATIONS" />
                   </ListItem>
-                  <ListItem
+                  {/* <ListItem
                     button
                     onClick={() => {
                       navigate("/resume-builder");
@@ -274,7 +273,7 @@ const Navbar = () => {
                     }}
                   >
                     <ListItemText primary="RESUME" />
-                  </ListItem>
+                  </ListItem> */}
                   <ListItem
                     button
                     onClick={() => {
