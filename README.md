@@ -35,7 +35,7 @@ A modern **Job Board** application built with **React, TypeScript, Vite, Redux, 
 ✅ **Glassmorphism UI** for a modern look  
 ✅ **Framer Motion animations** for smooth interactions  
 ✅ **Dark Theme & Responsive UI**  
-✅ **Session Persistence via `sessionStorage`**
+✅ **STORAGE Persistence via `SUPABASE`**
 
 ----------
 

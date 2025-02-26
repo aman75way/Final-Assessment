@@ -122,6 +122,15 @@ const Navbar = () => {
                     RESUME
                   </Typography>
                 </motion.div>
+                <motion.div whileHover={{ scale: 1.1 }}>
+                  <Typography
+                    variant="body1"
+                    sx={{ cursor: "pointer", color: "black" }}
+                    onClick={() => navigate("/recommended-jobs")}
+                  >
+                    RECOMMENDATIONS
+                  </Typography>
+                </motion.div>
               </>
             )}
 
@@ -175,6 +184,19 @@ const Navbar = () => {
                   <MenuItem disabled>
                     {user.name} - {user.role}
                   </MenuItem>
+                  {/* Skills List in Desktop */}
+                  {user.skills && user.skills.length > 0 && (
+                    <Box sx={{ padding: "8px 16px" }}>
+                      <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+                        Skills:
+                      </Typography>
+                      {user.skills.map((skill, index) => (
+                        <Typography key={index} variant="body2">
+                          {skill}
+                        </Typography>
+                      ))}
+                    </Box>
+                  )}
                   <MenuItem onClick={handleLogout} sx={{ color: "black" }}>
                     Logout
                   </MenuItem>
@@ -235,24 +257,33 @@ const Navbar = () => {
 
               {user?.role === "USER" && (
                 <>
-                <ListItem
-                  button
-                  onClick={() => {
-                    navigate("/applications");
-                    setMobileOpen(false);
-                  }}
-                >
-                  <ListItemText primary="APPLICATIONS" />
-                </ListItem>
-                <ListItem
-                  button
-                  onClick={() => {
-                    navigate("/resume-builder");
-                    setMobileOpen(false);
-                  }}
-                >
-                  <ListItemText primary="RESUME" />
-                </ListItem>
+                  <ListItem
+                    button
+                    onClick={() => {
+                      navigate("/applications");
+                      setMobileOpen(false);
+                    }}
+                  >
+                    <ListItemText primary="APPLICATIONS" />
+                  </ListItem>
+                  <ListItem
+                    button
+                    onClick={() => {
+                      navigate("/resume-builder");
+                      setMobileOpen(false);
+                    }}
+                  >
+                    <ListItemText primary="RESUME" />
+                  </ListItem>
+                  <ListItem
+                    button
+                    onClick={() => {
+                      navigate("/recommended-jobs");
+                      setMobileOpen(false);
+                    }}
+                  >
+                    <ListItemText primary="RECOMMENDATIONS" />
+                  </ListItem>
                 </>
               )}
 
@@ -279,10 +310,22 @@ const Navbar = () => {
                 </>
               )}
 
+              {/* Skills in Mobile */}
+              {user?.skills && user.skills.length > 0 && (
+                <Box sx={{ padding: "8px 16px" }}>
+                  <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+                    Skills: {user.skills.map((skill) => skill).join(", ")}
+                  </Typography>
+                </Box>
+              )}
+
               {user ? (
-                <ListItem button onClick={handleLogout}>
-                  <ListItemText primary="LOGOUT" />
-                </ListItem>
+                <>
+
+                  <ListItem button onClick={handleLogout}>
+                    <ListItemText primary="LOGOUT" />
+                  </ListItem>
+                </>
               ) : (
                 <ListItem
                   button

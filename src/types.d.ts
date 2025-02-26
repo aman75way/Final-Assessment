@@ -61,6 +61,7 @@ interface Job {
   type: string;
   skillsRequired: string[];
   creator: string;
+  score?: number;
 }
 
 // JobsState interface

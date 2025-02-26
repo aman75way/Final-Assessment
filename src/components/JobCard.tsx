@@ -22,14 +22,14 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.auth.user);
 
-  const handleApply = (event : any) => {
+  const handleApply = (event: any) => {
 
     event.preventDefault();
     if (!user) {
       navigate("/login");
       return;
     }
-  
+
     setLoading(true);
     dispatch(addApplication({ user_id: user.id, job_id: job.id }))
       .unwrap()
@@ -75,6 +75,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
         <Typography variant="body2" className="job-skills" sx={{ color: "black" }}>
           {job.skillsRequired.join(", ")}
         </Typography>
+
         {!user || user.role === "USER" ? (
           <Button
             variant="contained"
@@ -88,7 +89,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
             }}
             onClick={handleApply}
           >
-           {loading ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Apply Now"}
+            {loading ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Apply Now"}
           </Button>
         ) : ""}
 

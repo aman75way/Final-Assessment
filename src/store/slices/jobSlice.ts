@@ -1,12 +1,25 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { supabase } from "../../services/supabase";
+import axios from "axios";
 import { toast } from "react-toastify";
+
+const API_URL = "http://localhost:8000";  // FastAPI backend
+
+interface JobState {
+  jobs: Job[];
+  recommendedJobs: Job[];
+  loading: boolean;
+  status: "idle" | "loading" | "succeeded" | "failed";
+  error: string | null;
+}
 
 // Initial State
 const initialState: JobState = {
   jobs: [],
+  recommendedJobs: [],
   loading: false,
+  status: "idle",
   error: null,
 };
 
@@ -61,6 +74,20 @@ export const deleteJob = createAsyncThunk(
   }
 );
 
+// Fetch recommended jobs
+export const fetchRecommendedJobs = createAsyncThunk(
+  "jobs/fetchRecommendedJobs",
+  async (userId: string, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${API_URL}/recommend-jobs/${userId}`);
+      console.log(response.data.recommended_jobs)
+      return response.data.recommended_jobs;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 // ----------------- Slice -----------------
 const jobSlice = createSlice({
   name: "jobs",
@@ -68,6 +95,7 @@ const jobSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // Fetch Jobs
       .addCase(fetchJobs.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -80,18 +108,44 @@ const jobSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
+
+      // Add Job
       .addCase(addJob.fulfilled, (state, action: PayloadAction<Job[]>) => {
         state.jobs.push(action.payload[0]);
       })
+
+      // Delete Job
       .addCase(deleteJob.fulfilled, (state, action: PayloadAction<string>) => {
         state.jobs = state.jobs.filter((job) => job.id !== action.payload);
+      })
+
+      // Fetch Recommended Jobs
+      .addCase(fetchRecommendedJobs.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(fetchRecommendedJobs.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload as string;
+      })
+      .addCase(fetchRecommendedJobs.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.recommendedJobs = action.payload.map((job : Job) => ({
+          ...job,
+          skillsRequired: job.skillsRequired || [], 
+          creator: job.creator || "Unknown",       
+          score: job.score ?? 0,                   
+        }));
       });
+           
   },
 });
 
 // Selectors
 export const selectJobs = (state: RootState) => state.jobs.jobs;
+export const selectRecommendedJobs = (state: RootState) => state.jobs.recommendedJobs;
 export const selectJobLoading = (state: RootState) => state.jobs.loading;
+export const selectJobStatus = (state: RootState) => state.jobs.status;
 export const selectJobError = (state: RootState) => state.jobs.error;
 
 // Reducer

@@ -19,12 +19,13 @@ import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "./store/store";
 import { useLoadingBar } from "react-top-loading-bar";
 import ResumeBuilder from "./pages/resumebuilder";
+import RecommendedJobs from "./pages/recommendedjobs";
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
   const isLoading = useSelector((state: RootState) => state.auth.isLoading);
   const { start, complete } = useLoadingBar({
-    color: "#000000", // black color for the loading bar
+    color: "#000000",
     height: 3,
   });
   const location = useLocation();
@@ -32,18 +33,18 @@ const App = () => {
 
   useEffect(() => {
     if (isLoading) {
-      start(); 
+      start();
     } else {
-      complete(); 
+      complete();
     }
   }, [isLoading, start, complete]);
 
-  
+
   useEffect(() => {
-    start(); 
-    return () => complete(); 
+    start();
+    return () => complete();
   }, [location.pathname, start, complete]);
-  
+
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -84,19 +85,21 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/" element={<HomePage />} />
-        <Route path="/recruiter" element={<RecruiterProtected />}>
-          <Route path="" element={<RecruiterPage />} />
+
+        {/* Protected Routes for Users */}
+        <Route element={<UserProtected />}>
+          <Route path="/applications" element={<UserApplications />} />
+          <Route path="/resume-builder" element={<ResumeBuilder />} />
+          <Route path="/recommended-jobs" element={<RecommendedJobs />} />
         </Route>
-        <Route path="/applications" element={<UserProtected />}>
-          <Route path="" element={<UserApplications />} />
-        </Route>
-        <Route path="/recruiter/applications" element={<RecruiterProtected />}>
-          <Route path="" element={<RecruiterApplications />} />
-        </Route>
-        <Route path="/resume-builder" element={<UserProtected />}>
-          <Route path="" element={<ResumeBuilder />} />
+
+        {/* Protected Routes for Recruiters */}
+        <Route element={<RecruiterProtected />}>
+          <Route path="/recruiter" element={<RecruiterPage />} />
+          <Route path="/recruiter/applications" element={<RecruiterApplications />} />
         </Route>
       </Routes>
+
       <Footer />
     </>
   );

@@ -13,7 +13,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 def scrape_jobs():
     # Setup Chrome in headless mode
     options = Options()
-    options.add_argument("--headless")  
+    options.add_argument("--headless")
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
 
@@ -24,7 +24,7 @@ def scrape_jobs():
         url = "http://localhost:5173"  # Update this if using a different local port
         driver.get(url)
 
-        # Wait for job listings to load (adjust timeout if needed)
+        # Wait for job listings to load
         WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.CLASS_NAME, "job-title"))
         )
@@ -33,14 +33,17 @@ def scrape_jobs():
         page_source = driver.page_source
         soup = BeautifulSoup(page_source, "html.parser")
 
-        job_elements = soup.find_all("div", class_="MuiBox-root")  # Adjust selector if needed
+        # Find all job cards
+        job_elements = soup.find_all("div", class_="MuiBox-root")  # Might need refinement
 
         print(f"Found {len(job_elements)} job listings.")
 
         jobs = []
         for job in job_elements:
             try:
-                job_id = job.get("data-job-id", "").strip()  # Extract job ID from attribute
+                # Extract job ID from a hidden attribute (adjust based on actual HTML structure)
+                job_id = job.get("data-id", "").strip() or job.get("id", "").strip()
+
                 title = job.find("h6", class_="job-title").text.strip() if job.find("h6", class_="job-title") else ""
                 company = job.find("p", class_="job-company").text.strip() if job.find("p", class_="job-company") else ""
                 location_type = job.find("p", class_="job-location").text.strip() if job.find("p", class_="job-location") else ""
@@ -50,7 +53,7 @@ def scrape_jobs():
                 location, job_type = location_type.split("|") if "|" in location_type else (location_type, "")
 
                 jobs.append({
-                    "job_id": job_id,  # Include job ID
+                    "job_id": job_id,
                     "title": title,
                     "company": company,
                     "location": location.strip(),
