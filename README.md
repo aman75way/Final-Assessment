@@ -122,9 +122,6 @@ pnpm run dev
 2.  **Create Job Listings**
 3.  **Delete Job Listings**
 
-### **Future Enhancements:**
-1.  **View Received Applications**
-2.  **Accept / Reject Applicants** 
 
 ----------
 
